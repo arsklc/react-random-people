@@ -10,28 +10,21 @@ const Location = () => {
   const fetchData = async () => {
     try {
       setLoading(true);
-      const fetchedPeople: any[] = [];
-      const requests = [];
-
-      for (let i = 0; i < peopleCount; i++) {
-        requests.push(axios.get(`https://randomuser.me/api/?nat=${countryCode}`));
-      }
-
-      const responses = await Promise.all(requests);
-
-      responses.forEach((response) => {
-        const fetchedPerson = response.data.results[0];
-
-        fetchedPeople.push({
-          gender: fetchedPerson.gender,
-          name: fetchedPerson.name.first,
-          surname: fetchedPerson.name.last,
-          age: fetchedPerson.registered.age,
-          city: fetchedPerson.location.city,
-          country: fetchedPerson.location.country,
-        });
-      });
-
+      
+      const response = await axios.get(
+        `https://randomuser.me/api/?results=${peopleCount}&nat=${countryCode}`
+      );
+      
+      const fetchedPeople = response.data.results.map((person: any) => ({
+        image: person.picture.large,
+        gender: person.gender,
+        name: person.name.first,
+        surname: person.name.last,
+        age: person.registered.age,
+        city: person.location.city,
+        country: person.location.country,
+      }));
+      
       setPeople(fetchedPeople);
     } catch (error) {
       console.error('Hata:', error);
@@ -55,35 +48,41 @@ const Location = () => {
 
   return (
     <div>
-      <h1>Rastgele Kişiler Getir</h1>
-      <label htmlFor="country">Ülke Seçin:</label>
-      <select id="country" onChange={handleCountryChange} value={countryCode}>
-        <option value="tr">Türkiye</option>
-        <option value="gb">İngiltere</option>
-        <option value="us">ABD</option>
-      </select>
-      <br />
-      <label htmlFor="count">Listelenecek kişi sayısı:</label>
-      <input
-        type="number"
-        id="count"
-        min="1"
-        max="100"
-        value={peopleCount}
-        onChange={handleCountChange}
-      />
-      <button onClick={fetchData}>Seçilen Konumdan Kişileri Getir</button>
-      {loading ? (
-        <h2>Loading...</h2>
-      ) : (
-        people.map((person, index) => (
-          <div className="person-card" key={index}>
-            <h2>
-              Fullname: {person.name} {person.surname} | Gender: {person.gender} | Age: {person.age} | Location: {person.city}, {person.country}
-            </h2>
-          </div>
-        ))
-      )}
+      <div>
+        <h1>Rastgele Kişiler Getir</h1>
+        <label htmlFor="country">Ülke Seçin:</label>
+        <select id="country" onChange={handleCountryChange} value={countryCode}>
+          <option value="tr">Türkiye</option>
+          <option value="gb">İngiltere</option>
+          <option value="us">ABD</option>
+        </select>
+        <br />
+        <label htmlFor="count">Listelenecek kişi sayısı:</label>
+        <input
+          type="number"
+          id="count"
+          min="1"
+          max="100"
+          value={peopleCount}
+          onChange={handleCountChange}
+        />
+        <button onClick={fetchData}>Seçilen Konumdan Kişileri Getir</button>
+      </div>
+      <div className='container'>
+        {loading ? (
+          <h2>Loading...</h2>
+        ) : (
+          people.map((person, index) => (
+            <div key={index} className="person-card">
+              <img src={person.image} alt="Person's image" />
+              <h2>{person.name} {person.surname}</h2>
+              <p>Gender: {person.gender}</p>
+              <p>Age: {person.age}</p>
+              <p>Location: {person.city}, {person.country}</p>
+            </div>
+          ))
+        )}
+      </div>      
     </div>
   );
 };

@@ -19,6 +19,7 @@ const Home = () => {
       const response = await axios.get(`https://randomuser.me/api/?results=1&gender=${genderContext?.gender}`);
       const fetchedPerson = response.data.results[0];
       const newPerson = {
+        image: fetchedPerson.picture.medium,
         gender: fetchedPerson.gender,
         name: fetchedPerson.name.first,
         surname: fetchedPerson.name.last,
@@ -37,19 +38,26 @@ const Home = () => {
   };
 
   return (
-    <div className="container">
-      <h1>{genderContext?.gender === 'female' ? 'Kadınlar' : 'Erkekler'} Listesi</h1>
-      <button onClick={fetchData}>Yeni Kişi Getir</button>
-      {people.map((person, index) => (
-        <div key={index} className="person-card" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <h2>
-            Fullname: {person.name} {person.surname} | Gender: {person.gender} | Age: {person.age} | Location: {person.city}, {person.country}
-          </h2>
-          <button onClick={() => handleDelete(index)}>Sil</button>
-        </div>
-      ))}
+    <div>
+      <div>
+        <h1>{genderContext?.gender === 'female' ? 'Kadınlar' : 'Erkekler'} Listesi</h1>
+        <button onClick={fetchData}>Yeni Kişi Getir</button>
+      </div>
+      <div className="container">      
+        {people.map((person, index) => (
+          <div key={index} className="person-card">
+            <img src={person.image} alt="Person's image" />
+            <h2>{person.name} {person.surname}</h2>
+            <p>Gender: {person.gender}</p>
+            <p>Age: {person.age}</p>
+            <p>Location: {person.city}, {person.country}</p>
+            <button onClick={() => handleDelete(index)}>Sil</button>
+          </div>
+        ))}
+      </div>
     </div>
   );
+  
 };
 
 export default Home;

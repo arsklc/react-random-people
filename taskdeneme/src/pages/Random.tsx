@@ -7,12 +7,12 @@ const Random = () => {
   const fetchData = async () => {
     try {
 
-      const response = await axios.get('https://randomuser.me/api/?results=200');
+      const response = await axios.get('https://randomuser.me/api/?results=50');
       console.log(response.data);
 
       const fetchedPeople = response.data.results
-        .filter((person: any) => person.gender === 'female')
         .map((person: any) => ({
+          image: person.picture.large,
           gender: person.gender,
           name: person.name.first,
           surname: person.name.last,
@@ -29,18 +29,20 @@ const Random = () => {
 
   return (
     <div>
-      <button onClick={fetchData}>50 Yeni Kişi Getir</button>
-      {people.length > 0 ? (
-        people.map((person, index) => (
-          <div className="person-card" key={index}>
-            <h2>
-              Fullname: {person.name} {person.surname} | Gender: {person.gender} | Age: {person.age} | Location: {person.city}, {person.country}
-            </h2>
+      <div>
+        <button onClick={fetchData}>50 Yeni Kişi Getir</button>
+      </div>
+      <div className="container">      
+        {people.map((person, index) => (
+          <div key={index} className="person-card">
+            <img src={person.image} alt="Person's image" />
+            <h2>{person.name} {person.surname}</h2>
+            <p>Gender: {person.gender}</p>
+            <p>Age: {person.age}</p>
+            <p>Location: {person.city}, {person.country}</p>
           </div>
-        ))
-      ) : (
-        <p>Kişi bulunamadı.</p>
-      )}
+        ))}
+      </div>
     </div>
   );
 }
