@@ -10,20 +10,20 @@ const Header = () => {
       <nav>
         <ul>
           <li>
-            <Link to="/login">Login</Link>
+            <Link to="/login">Select Gender</Link>
           </li>
           <li>
             {genderContext?.gender ? (
-              <Link to="/home">Home</Link>
+              <Link to="/home">Random</Link>
             ) : (
-              <span style={{ color: 'gray', cursor: 'not-allowed' }}>Home</span>
+              <span style={{ color: 'gray', cursor: 'not-allowed' }}>Random</span>
             )}
           </li>
           <li>
-            <Link to="/random">Random</Link>
+            <Link to="/random">Popular</Link>
           </li>
           <li>
-            <Link to="/location">Location</Link>
+            <Link to="/location">Nationalities</Link>
           </li>
         </ul>
       </nav>

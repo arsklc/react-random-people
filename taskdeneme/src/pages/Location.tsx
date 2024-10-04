@@ -1,11 +1,13 @@
 import { useState } from 'react';
 import axios from 'axios';
+import { GrPowerCycle } from "react-icons/gr";
+import { FaPhone, FaEnvelope, FaMapMarkerAlt, FaCalendarAlt, FaUser } from "react-icons/fa";
 
 const Location = () => {
   const [people, setPeople] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [countryCode, setCountryCode] = useState<string>('tr');
-  const [peopleCount, setPeopleCount] = useState<number>(10);
+  const [peopleCount, setPeopleCount] = useState<number>(1); // Başlangıç değeri 1
 
   const fetchData = async () => {
     try {
@@ -17,12 +19,12 @@ const Location = () => {
       
       const fetchedPeople = response.data.results.map((person: any) => ({
         image: person.picture.large,
-        gender: person.gender,
         name: person.name.first,
         surname: person.name.last,
-        age: person.registered.age,
-        city: person.location.city,
         country: person.location.country,
+        phone: person.phone,
+        email: person.email,
+        birthDate: person.dob.date
       }));
       
       setPeople(fetchedPeople);
@@ -33,52 +35,96 @@ const Location = () => {
     }
   };
 
-  const handleCountryChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setCountryCode(event.target.value); 
+  const showAlert = () => {
+    alert('1 den 100e kadar sayı giriniz!');
   };
 
-  const handleCountChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const value = Number(event.target.value);
-    if (value >= 1 && value <= 100) {
-      setPeopleCount(value);
+  const handleIncrement = () => {
+    if (peopleCount < 100) {
+      setPeopleCount(peopleCount + 1);
     } else {
-      setPeopleCount(10);
+      showAlert();
     }
+  };
+
+  const handleDecrement = () => {
+    if (peopleCount > 1) {
+      setPeopleCount(peopleCount - 1);
+    } else {
+      showAlert();
+    }
+  };
+
+  const handleCountryClick = (code: string) => {
+    setCountryCode(code);
   };
 
   return (
     <div>
       <div>
-        <h1>Rastgele Kişiler Getir</h1>
-        <label htmlFor="country">Ülke Seçin:</label>
-        <select id="country" onChange={handleCountryChange} value={countryCode}>
-          <option value="tr">Türkiye</option>
-          <option value="gb">İngiltere</option>
-          <option value="us">ABD</option>
-        </select>
-        <br />
-        <label htmlFor="count">Listelenecek kişi sayısı:</label>
-        <input
-          type="number"
-          id="count"
-          min="1"
-          max="100"
-          value={peopleCount}
-          onChange={handleCountChange}
-        />
-        <button onClick={fetchData}>Seçilen Konumdan Kişileri Getir</button>
+        <h1 style={{color: 'blue', marginTop: '10px'}}>Nationalities</h1>
+        <div>
+          <button style={{marginRight:'10px'}} onClick={fetchData}><GrPowerCycle style={{fontSize:'18px'}}/> Random User</button>
+
+          <button onClick={handleDecrement} style={{ padding: '10px 20px', fontSize: '18px' }}>-</button>
+          <input
+            type="text"
+            value={peopleCount}
+            style={{
+              width: '50px',
+              textAlign: 'center',
+              fontSize: '18px',
+              padding: '5px',
+              border: 'none'
+            }}
+          />
+          <button onClick={handleIncrement} style={{ padding: '10px 20px', fontSize: '18px',marginRight:'10px' }}>+</button>
+
+          <button
+            style={{
+              backgroundColor: countryCode === 'tr' ? 'darkblue' : 'lightblue',
+              margin: '10px 0px',
+              padding: '10px',
+              height: '40px',
+              width: '80px'
+            }} onClick={() => handleCountryClick('tr')}>Türkiye</button>
+          <button
+            style={{
+              backgroundColor: countryCode === 'gb' ? 'darkblue' : 'lightblue',
+              margin: '10px 0px',
+              padding: '10px',
+              height: '40px',
+              width: '80px'
+            }} onClick={() => handleCountryClick('gb')}>İngiltere</button>
+          <button
+            style={{
+              backgroundColor: countryCode === 'us' ? 'darkblue' : 'lightblue',
+              margin: '10px 0px',
+              padding: '10px',
+              height: '40px',
+              width: '80px'
+            }} onClick={() => handleCountryClick('us')}>ABD</button>
+        </div>       
       </div>
+
       <div className='container'>
         {loading ? (
           <h2>Loading...</h2>
         ) : (
           people.map((person, index) => (
             <div key={index} className="person-card">
-              <img src={person.image} alt="Person's image" />
-              <h2>{person.name} {person.surname}</h2>
-              <p>Gender: {person.gender}</p>
-              <p>Age: {person.age}</p>
-              <p>Location: {person.city}, {person.country}</p>
+              <img src={person.image} alt="profile" />
+              <div className="info">
+                <p style={{marginBottom: '30px'}}>
+                  <FaCalendarAlt /> {new Date(person.birthDate).toLocaleDateString()} 
+                  <FaMapMarkerAlt /> {person.country} 
+                  <FaUser /> {person.name} {person.surname}
+                </p>
+                <p>
+                  <FaPhone /> {person.phone}  
+                  <FaEnvelope /> {person.email}
+                </p>
+              </div>
             </div>
           ))
         )}

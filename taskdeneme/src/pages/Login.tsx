@@ -20,9 +20,9 @@ const Login: React.FC = () => {
 
   return (
     <div>
-      <h1>Listelemek istediğiniz kullanıcıların cinsiyetini seçin</h1>
-      <button onClick={() => handleGenderSelect('male')}>Erkek</button>
-      <button onClick={() => handleGenderSelect('female')}>Kadın</button>
+      <h1 style={{marginTop:'15px'}}>Listelemek istediğiniz kullanıcıların cinsiyetini seçin</h1>
+      <button style={{marginRight:'10px', marginTop:'10px'}} onClick={() => handleGenderSelect('male')}>Erkek</button>
+      <button style={{marginRight:'10px', marginTop:'10px'}}onClick={() => handleGenderSelect('female')}>Kadın</button>
     </div>
   );
 };

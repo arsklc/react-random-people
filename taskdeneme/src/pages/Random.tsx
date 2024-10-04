@@ -1,5 +1,8 @@
 import { useState } from 'react';
 import axios from 'axios';
+import { GrPowerCycle } from "react-icons/gr";
+import { FaPhone, FaEnvelope, FaMapMarkerAlt, FaCalendarAlt,FaUser } from "react-icons/fa";
+
 
 const Random = () => {
   const [people, setPeople] = useState<any[]>([]);
@@ -13,12 +16,12 @@ const Random = () => {
       const fetchedPeople = response.data.results
         .map((person: any) => ({
           image: person.picture.large,
-          gender: person.gender,
-          name: person.name.first,
-          surname: person.name.last,
-          age: person.registered.age,
-          city: person.location.city,
-          country: person.location.country,
+        name: person.name.first,
+        surname: person.name.last,
+        country: person.location.country,
+        phone: person.phone,
+        email: person.email,
+        birthDate: person.dob.date
         }));
 
       setPeople(fetchedPeople);
@@ -30,17 +33,18 @@ const Random = () => {
   return (
     <div>
       <div>
-        <button onClick={fetchData}>50 Yeni Kişi Getir</button>
+        <h1 style={{color:'blue',margin:'10px 10px'}}>Popular</h1>
+        <button style={{marginBottom:'15px'}} onClick={fetchData}><GrPowerCycle style={{fontSize:'18px'}}/> Random 50 User </button>
       </div>
       <div className="container">      
         {people.map((person, index) => (
           <div key={index} className="person-card">
-            <img src={person.image} alt="Person's image" />
-            <h2>{person.name} {person.surname}</h2>
-            <p>Gender: {person.gender}</p>
-            <p>Age: {person.age}</p>
-            <p>Location: {person.city}, {person.country}</p>
+          <img src={person.image}/>
+          <div className="info">
+            <p style={{marginBottom:'30px'}}><FaCalendarAlt /> {new Date(person.birthDate).toLocaleDateString()}  <FaMapMarkerAlt />{person.country} <FaUser/>{person.name} {person.surname}</p>
+            <p><FaPhone /> {person.phone}  <FaEnvelope /> {person.email}</p>
           </div>
+        </div>
         ))}
       </div>
     </div>
